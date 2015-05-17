@@ -1,0 +1,19 @@
+#!/bin/bash
+
+echo "$1" | sudo tee /etc/mesos/zk
+echo "$2" | sudo tee /etc/mesos-slave/hostname
+echo "$2" | sudo tee /etc/mesos-slave/ip
+
+sudo systemctl stop firewalld.service
+
+sudo systemctl disable NetworkManager.service
+sudo systemctl stop NetworkManager.service
+
+sudo systemctl enable mesos-slave.service
+sudo systemctl restart mesos-slave.service
+
+sudo systemctl disable mesos-master.service
+sudo systemctl stop mesos-master.service
+
+sudo systemctl enable marathon.service
+sudo systemctl restart marathon.service

@@ -1,5 +1,6 @@
 #!/bin/bash
 set -o errexit -o nounset -o pipefail
+
 function -h {
 cat <<USAGE
  USAGE: mesosflexinstall (--rel <mesos-version>)?
@@ -42,10 +43,11 @@ function options {
 
 function install_mesos {
   global os_release
-  case "$os_release" in
-    ubuntu/14.04)      install_with_apt "trusty" ;;
-    *)                 err "No support for $os_release at this time." ;;
-  esac
+  #case "$os_release" in
+  #  ubuntu/14.04)      install_with_apt "trusty" ;;
+  #  *)                 err "No support for $os_release at this time." ;;
+  #esac
+  install_with_yum 7
 }
 
 function configure_slave {
@@ -56,24 +58,32 @@ function configure_slave {
   fi
 }
 
-function install_apt_source {
-  echo "deb http://repos.mesosphere.io/ubuntu/ $1 main" |
-    as_root tee /etc/apt/sources.list.d/mesosphere.list
-  as_root apt-key adv --keyserver keyserver.ubuntu.com --recv E56151BF
-  as_root apt-get update
+function install_yum_repo {
+  case "$os_release" in
+    # 6)           as_root rpm -Uvh http://repos.mesosphere.io/el/6/noarch/RPMS/mesosphere-el-repo-6-2.noarch.rpm
+    #              as_root rpm -Uvh http://archive.cloudera.com/cdh4/one-click-install/redhat/6/x86_64/cloudera-cdh-4-0.x86_64.rpm
+    #              as_root yum -y install zookeeper
+    #              ;;
+    centos/7)      rpm -q mesosphere-el-repo || as_root rpm -Uvh http://repos.mesosphere.io/el/7/noarch/RPMS/mesosphere-el-repo-7-1.noarch.rpm
+                   rpm -q mesos || as_root yum -y install mesos
+                   rpm -q marathon || as_root yum -y install marathon
+                   rpm -q mesosphere-zookeeper || as_root yum -y install mesosphere-zookeeper
+                   ;;
+    *)      err "No support for $os_release at this time." ;;
+  esac
 }
 
-function install_with_apt {
-  apt_ curl unzip
-  install_apt_source $1
-  apt_ zookeeperd zookeeper zookeeper-bin docker.io mesos marathon deimos
-  as_root ln -sf /usr/bin/docker.io /usr/local/bin/docker
-  as_root sed -i '$acomplete -F _docker docker' /etc/bash_completion.d/docker.io
+function install_with_yum {
+  yum_ curl unzip
+  install_yum_repo $1
+  yum_ docker deimos net-tools dstat vim-enhanced mlocate
+  as_root ln -sf /usr/bin/docker /usr/local/bin/docker
+  #as_root sed -i '$acomplete -F _docker docker' /etc/bash_completion.d/docker.io
 }
 
-function apt_ {
-  as_root env DEBIAN_FRONTEND=noninteractive aptitude update
-  as_root env DEBIAN_FRONTEND=noninteractive aptitude install -y "$@"
+function yum_ {
+  as_root env yum update -y
+  as_root env yum install -y "$@"
 }
 
 function as_root {

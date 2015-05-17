@@ -1,5 +1,9 @@
 # Playa Mesos
 
+This is rewrite of playa-mesos from ubuntu to centos 7
+
+TODO: Change docs to reflect centos
+
 [Playa Mesos][8] helps you quickly create [Apache Mesos][1] test environments.
 This project relies on [VirtualBox][5], [Vagrant][6], and an Ubuntu box image
 which has Mesos and [Marathon][2] pre-installed. The box image is downloadable for your

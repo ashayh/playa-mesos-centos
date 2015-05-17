@@ -1,0 +1,46 @@
+{
+  "nodes": {
+    "mesos1.intu.com": {
+      ":ip"        :  "192.168.40.5",
+      "ports"      :  [],
+      ":memory"    :  512,
+      ":box"       :  "playa_mesos_centos-7.1-virtualbox",
+      ":bootstrap" :  "lib/scripts/common/mesosflexinstall"
+    },
+    "mesos2.intu.com": {
+      ":ip"        :  "192.168.40.6",
+      "ports"      :  [],
+      ":memory"    :  512,
+      ":box"       :  "playa_mesos_centos-7.1-virtualbox",
+      ":bootstrap" :  "lib/scripts/common/mesosflexinstall"
+    },
+    "slave1.intu.com": {
+      ":ip"        :  "192.168.40.10",
+      "ports"      :  [],
+      ":memory"    :  512,
+      ":box"       :  "playa_mesos_centos-7.1-virtualbox",
+      ":bootstrap" :  "lib/scripts/common/mesosflexinstall"
+    },
+    "slave2.intu.com": {
+      ":ip"        :  "192.168.40.11",
+      "ports"      :  [],
+      ":memory"    :  512,
+      ":box"       :  "playa_mesos_centos-7.1-virtualbox",
+      ":bootstrap" :  "lib/scripts/common/mesosflexinstall"
+    },
+    "slave3.intu.com": {
+      ":ip"        :  "192.168.40.12",
+      "ports"      :  [],
+      ":memory"    :  512,
+      ":box"       :  "playa_mesos_centos-7.1-virtualbox",
+      ":bootstrap" :  "lib/scripts/common/mesosflexinstall"
+    },
+    "slave4.intu.com": {
+      ":ip"        :  "192.168.40.13",
+      "ports"      :  [],
+      ":memory"    :  512,
+      ":box"       :  "playa_mesos_centos-7.1-virtualbox",
+      ":bootstrap" :  "lib/scripts/common/mesosflexinstall"
+    }
+  }
+}

@@ -1,9 +1,6 @@
-#!/usr/bin/env bash
-set -o errexit -o nounset -o pipefail
+date > /etc/vagrant_box_build_time
 
-mkdir /home/vagrant/.ssh
-wget --no-check-certificate \
-    'https://github.com/mitchellh/vagrant/raw/master/keys/vagrant.pub' \
-    -O /home/vagrant/.ssh/authorized_keys
-chown -R vagrant /home/vagrant/.ssh
-chmod -R go-rwsx /home/vagrant/.ssh
+mkdir -pm 700 /home/vagrant/.ssh
+curl -L https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/vagrant.pub -o /home/vagrant/.ssh/authorized_keys
+chmod 0600 /home/vagrant/.ssh/authorized_keys
+chown -R vagrant:vagrant /home/vagrant/.ssh

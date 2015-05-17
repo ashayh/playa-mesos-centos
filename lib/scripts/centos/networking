@@ -12,4 +12,3 @@ rm -rf /dev/.udev/
 rm -rf /var/lib/dhcp3/*
 
 # Delay a bit to make dhclient happy
-echo "pre-up sleep 2" >> /etc/network/interfaces

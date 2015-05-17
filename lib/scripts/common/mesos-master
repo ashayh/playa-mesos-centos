@@ -1,0 +1,29 @@
+#!/bin/bash
+
+echo "$1" | sudo tee /etc/mesos/zk
+echo "$2" | sudo tee /etc/mesos-master/hostname
+echo "$2" | sudo tee /etc/mesos-master/ip
+
+##### marathon
+sudo mkdir -p /etc/marathon/conf
+sudo cp /etc/mesos-master/hostname /etc/marathon/conf
+
+sudo cp /etc/mesos/zk /etc/marathon/conf/master
+sudo cp /etc/mesos/zk /etc/marathon/conf/zk
+
+sed -i -e 's/mesos$/marathon/' /etc/marathon/conf/zk
+##### marathon
+
+sudo systemctl stop firewalld.service
+
+sudo systemctl disable NetworkManager.service
+sudo systemctl stop NetworkManager.service
+
+sudo systemctl enable zookeeper.service
+sudo systemctl restart zookeeper.service
+
+sudo systemctl enable mesos-master.service
+sudo systemctl restart mesos-master.service
+
+sudo systemctl disable mesos-slave.service
+sudo systemctl stop mesos-slave.service
