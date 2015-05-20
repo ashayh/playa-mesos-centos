@@ -1,8 +1,47 @@
 #!/bin/bash
 
+sudo systemctl stop firewalld.service
+sudo systemctl disable firewalld.service
+
+sudo systemctl disable NetworkManager.service
+sudo systemctl stop NetworkManager.service
+
+sudo systemctl disable mesos-slave.service
+sudo systemctl stop mesos-slave.service
+
+sudo systemctl stop marathon.service
+
 echo "$1" | sudo tee /etc/mesos/zk
 echo "$2" | sudo tee /etc/mesos-master/hostname
 echo "$2" | sudo tee /etc/mesos-master/ip
+echo "$3" | sudo tee /etc/mesos-master/quorum
+echo "$4" | sudo tee /var/lib/zookeeper/myid
+echo "$4" | sudo tee /etc/zookeeper/conf/myid
+
+# ToDo: get name from elsewhere
+echo tomcat-test-cluster | sudo tee /etc/mesos-master/cluster
+
+##### zoo
+cnt=1
+for i in ${5} ${6} ${7}
+do
+  SERVER="server.${cnt}=${i}:2888:3888"
+  if sudo grep ${SERVER} /etc/zookeeper/conf/zoo.cfg >/dev/null
+  then
+    :
+  else
+    echo "${SERVER}" | sudo tee -a /etc/zookeeper/conf/zoo.cfg >/dev/null
+  fi
+  ((cnt++))
+done
+sudo mkdir -p /var/lib/zookeeper/logs
+sudo grep "dataLogDir=/var/lib/zookeeper/logs" /etc/zookeeper/conf/zoo.cfg || echo "dataLogDir=/var/lib/zookeeper/logs" | sudo tee -a /etc/zookeeper/conf/zoo.cfg
+#sudo grep "tickTime=1000" /etc/zookeeper/conf/zoo.cfg  || sudo sed -i -e "s#^tickTime.*#tickTime=1000#" /etc/zookeeper/conf/zoo.cfg
+##### zoo
+
+sudo sed -i -e "s#^ExecStart.*#ExecStart=/usr/bin/marathon --hostname ${2}#" /etc/systemd/system/multi-user.target.wants/marathon.service
+
+sudo sed -i -e "s#$(hostname -f) $(hostname -s) ##" /etc/hosts
 
 ##### marathon
 sudo mkdir -p /etc/marathon/conf
@@ -11,13 +50,9 @@ sudo cp /etc/mesos-master/hostname /etc/marathon/conf
 sudo cp /etc/mesos/zk /etc/marathon/conf/master
 sudo cp /etc/mesos/zk /etc/marathon/conf/zk
 
-sed -i -e 's/mesos$/marathon/' /etc/marathon/conf/zk
+sudo sed -i -e 's/mesos$/marathon/' /etc/marathon/conf/zk
 ##### marathon
 
-sudo systemctl stop firewalld.service
-
-sudo systemctl disable NetworkManager.service
-sudo systemctl stop NetworkManager.service
 
 sudo systemctl enable zookeeper.service
 sudo systemctl restart zookeeper.service
@@ -25,5 +60,5 @@ sudo systemctl restart zookeeper.service
 sudo systemctl enable mesos-master.service
 sudo systemctl restart mesos-master.service
 
-sudo systemctl disable mesos-slave.service
-sudo systemctl stop mesos-slave.service
+sudo systemctl enable marathon.service
+sudo systemctl restart marathon.service

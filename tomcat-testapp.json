@@ -1,0 +1,13 @@
+{
+  "id": "tomcat-testapp",
+  "cmd": "unzip testweb.zip ;  mv testweb/*.war apache-tomcat-*/webapps && cd apache-tomcat-* && sed \"s/8080/$PORT/g\" < ./conf/server.xml > ./conf/server-mesos.xml && ./bin/catalina.sh run -config ./conf/server-mesos.xml",
+  "mem": 128,
+  "cpus": 1.0,
+  "instances": 4,
+  "constraints": [["hostname", "UNIQUE"]],
+  "ports": [0],
+  "uris": [
+    "file:///vagrant/tomcat/apache-tomcat-7.0.62.tar.gz",
+    "file:///vagrant/testweb.zip"
+  ]
+}

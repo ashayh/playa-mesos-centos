@@ -1,19 +1,34 @@
 #!/bin/bash
 
-echo "$1" | sudo tee /etc/mesos/zk
-echo "$2" | sudo tee /etc/mesos-slave/hostname
-echo "$2" | sudo tee /etc/mesos-slave/ip
-
+sudo systemctl disable firewalld.service
 sudo systemctl stop firewalld.service
+
+sudo systemctl enable docker.service
+sudo systemctl restart docker.service
 
 sudo systemctl disable NetworkManager.service
 sudo systemctl stop NetworkManager.service
 
-sudo systemctl enable mesos-slave.service
-sudo systemctl restart mesos-slave.service
+sudo systemctl disable marathon.service
+sudo systemctl stop marathon.service
+
+sudo systemctl disable zookeeper.service
+sudo systemctl stop zookeeper.service
 
 sudo systemctl disable mesos-master.service
 sudo systemctl stop mesos-master.service
 
-sudo systemctl enable marathon.service
-sudo systemctl restart marathon.service
+sudo rm -f /tmp/mesos/meta/slaves/latest
+
+echo "$1" | sudo tee /etc/mesos/zk
+echo "$2" | sudo tee /etc/mesos-slave/hostname
+echo "$2" | sudo tee /etc/mesos-slave/ip
+
+# only for docker
+#echo 'docker,mesos' | sudo tee /etc/mesos-slave/containerizers
+# delay when pulling container
+#echo '5mins' | sudo tee /etc/mesos-slave/executor_registration_timeout
+
+sleep 5
+sudo systemctl enable mesos-slave.service
+sudo systemctl restart mesos-slave.service
