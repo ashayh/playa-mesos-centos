@@ -4,6 +4,8 @@ This is rewrite of [playa-mesos](https://github.com/mesosphere/playa-mesos) from
 
 This guide is made for OS X, but may work with changes on Linux.
 
+The Vagrant box image can be downloaded here:  http://107.170.206.223/playa_mesos_centos-7.1-virtualbox.box
+
 [Playa Mesos][8] helps you quickly create [Apache Mesos][1] test environments.
 This project relies on [VirtualBox][5], [Vagrant][6], and an Ubuntu box image
 which has Mesos and [Marathon][2] pre-installed. The box image is downloadable for your
