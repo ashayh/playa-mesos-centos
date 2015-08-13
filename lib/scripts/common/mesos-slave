@@ -25,7 +25,7 @@ echo "$2" | sudo tee /etc/mesos-slave/hostname
 echo "$2" | sudo tee /etc/mesos-slave/ip
 
 # only for docker
-#echo 'docker,mesos' | sudo tee /etc/mesos-slave/containerizers
+echo 'docker,mesos' | sudo tee /etc/mesos-slave/containerizers
 # delay when pulling container
 #echo '5mins' | sudo tee /etc/mesos-slave/executor_registration_timeout
 
